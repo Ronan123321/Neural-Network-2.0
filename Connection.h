@@ -1,9 +1,16 @@
 #pragma once
-#include "Node.h"
+
+
+class Node;
+class Network;
 
 class Connection
 {
-	Node* frontNode, backNode;
+friend Node;
+friend Network;
+
+	Node* frontNode;
+	Node* backNode;
 	double weight;
 
 };

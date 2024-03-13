@@ -1,11 +1,17 @@
 #pragma once
 #include "Connection.h"
 
+class Network;
+
 class Node
 {
+private:
 	double bias;
 
-	Connection* frontConnection, backConnection;
+	Node();
 
+	std::vector<Connection*> frontConnection;
+	std::vector<Connection*> backConnection;
 
+friend Network;
 };
