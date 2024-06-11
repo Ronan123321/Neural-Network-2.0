@@ -2,13 +2,23 @@
 #include <random>
 #include <iostream>
 
-Node::Node() {
+Node::Node(): value(0), nodeValue(0), averageBiasGradient(0) {
 	std::random_device dev;
 	std::mt19937 rng(dev());
 	std::uniform_real_distribution<double> dist(-0.1, 0.1);
 
-	this->bias = dist(rng);
-	std::cout << bias << std::endl;
-	frontConnection.push_back(nullptr);
-	backConnection.push_back(nullptr);
+	this->bias = dist(rng); // chabge back to dist(rng)
+}
+
+Node::Node(bool hasBias): value(0), nodeValue(0), averageBiasGradient(0) {
+	if (hasBias) {
+		std::random_device dev;
+		std::mt19937 rng(dev());
+		std::uniform_real_distribution<double> dist(-0.1, 0.1);
+
+		this->bias = dist(rng); // chabge back to dist(rng)
+	}
+	else {
+		this->bias = NULL;
+	}
 }
