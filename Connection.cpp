@@ -11,7 +11,7 @@ Connection::Connection(std::shared_ptr<Node> frontNode, std::shared_ptr<Node> ba
 	std::uniform_real_distribution<double> dist(-0.1, 0.1);
 	
 	this->weight = std::make_shared<double>(dist(rng)); // change back to dist(rng)
-
+	this->averageWeightGradient = std::make_shared<double>(0);
 }
 
 Connection::Connection(std::shared_ptr<Node> frontNode, std::shared_ptr<Node> backNode, std::shared_ptr<double> weight, std::shared_ptr<double> averageWeightGradient)

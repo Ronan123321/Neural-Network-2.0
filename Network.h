@@ -26,6 +26,10 @@ public:
 
 	Network();
 
+	int batchSize = 1; // this makes default stochastic
+
+	int totalEpoch = 1;
+
 	bool displayOutput = false;
 
 	void runNetworkWithTrainingData(bool displayOutput);
@@ -34,7 +38,11 @@ public:
 	
 	void passTrainingData(std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData);
 
-	void runNetworkTraining(GradientDescentType, ActivationFunctionType);
+	void passTestingData(std::vector<std::pair<std::vector<double>, std::vector<double>>> testingData);
+
+	void runNetworkGradientDescent(GradientDescentType, ActivationFunctionType);
+
+	void runNetworkGradientDescent(GradientDescentType, ActivationFunctionType, int batchSize);
 
 	ActivationFunctionType currentActivationFunction = Sigmoid; // defualt is sigmoid but can be changed
 
@@ -50,6 +58,8 @@ private:
 	std::vector<std::vector<Node>> nodeContainer;
 
 	std::vector<std::pair<std::vector<double>, std::vector<double>>> networkTrainingData;
+
+	std::vector<std::pair<std::vector<double>, std::vector<double>>> networkTestingData;
 
 	//---------------------Vars------------------------------------------------
 	
@@ -96,7 +106,11 @@ private:
 
 	void hiddenLayerGradientDescentStochBatch();
 
-	void loopAllLayers(std::vector<double>);
+	void batchCalcGradients(std::vector<double>);
+
+	void batchApplyGradients();
+	
+	void stochApplyGradients(std::vector<double>);
 
 	void stochasticGradientDescent();
 

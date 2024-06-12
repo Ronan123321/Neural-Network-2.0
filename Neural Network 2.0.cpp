@@ -47,7 +47,8 @@ int main()
 
     newNetwork.displayOutput = true;
     newNetwork.passTrainingData(trainingData);
-    newNetwork.runNetworkTraining(Network::GradientDescentType::Stochastic, Network::ActivationFunctionType::Sigmoid);
+    newNetwork.totalEpoch = 5;
+    newNetwork.runNetworkGradientDescent(Network::GradientDescentType::FullBatch, Network::ActivationFunctionType::Sigmoid);
 
 
     std::cin.get();
