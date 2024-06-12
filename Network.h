@@ -9,12 +9,6 @@ class Network
 {
 public:
 
-	enum GradientDescentType {
-		Stochastic,
-		MiniBatch,
-		FullBatch
-	};
-
 	enum ActivationFunctionType {
 		Sigmoid,
 		ReLU,
@@ -40,13 +34,13 @@ public:
 
 	void passTestingData(std::vector<std::pair<std::vector<double>, std::vector<double>>> testingData);
 
-	void runNetworkGradientDescent(GradientDescentType, ActivationFunctionType);
+	void runStochDescent(ActivationFunctionType); // run stochastic descent
 
-	void runNetworkGradientDescent(GradientDescentType, ActivationFunctionType, int batchSize);
+	void runMiniBatchDescent(ActivationFunctionType, int batchSize); // run mini batch with a specific batch size
+
+	void runFullBatchDescent(ActivationFunctionType, int epochTotal); // run full batch descent
 
 	ActivationFunctionType currentActivationFunction = Sigmoid; // defualt is sigmoid but can be changed
-
-	GradientDescentType currentGradientDescentType = Stochastic; // defualt is stochastic but can be changed
 
 
 private:

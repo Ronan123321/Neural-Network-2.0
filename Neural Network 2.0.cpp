@@ -48,7 +48,7 @@ int main()
     newNetwork.displayOutput = true;
     newNetwork.passTrainingData(trainingData);
     newNetwork.totalEpoch = 5;
-    newNetwork.runNetworkGradientDescent(Network::GradientDescentType::FullBatch, Network::ActivationFunctionType::Sigmoid);
+    newNetwork.runFullBatchDescent(Network::ActivationFunctionType::Sigmoid, 10); // run mini batch with a specific batch size (10
 
 
     std::cin.get();

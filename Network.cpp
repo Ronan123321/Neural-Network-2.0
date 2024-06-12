@@ -296,39 +296,24 @@ bool Network::compareFirstLayerToTrainingData() {
 
 //---------------------Gradient Descent------------------------------------------------
 
-void Network::runNetworkGradientDescent(GradientDescentType givenDescentMethod, ActivationFunctionType givenActivation) {
+void Network::runStochDescent(ActivationFunctionType givenActivation) {
 	this->currentActivationFunction = givenActivation;
-	this->currentGradientDescentType = givenDescentMethod;
 
-	switch (currentGradientDescentType) {
-		case Stochastic:
-			stochasticGradientDescent();
-			break;
-		case MiniBatch:
-			miniBatchGradientDescent();
-			break;
-		case FullBatch:
-			fullBatchGradientDescent();
-			break;
-	}
+	stochasticGradientDescent();
 }
 
-void Network::runNetworkGradientDescent(GradientDescentType givenDescentMethod, ActivationFunctionType givenActivation, int batchSize) {
+void Network::runMiniBatchDescent(ActivationFunctionType givenActivation, int batchSize) {
 	this->currentActivationFunction = givenActivation;
-	this->currentGradientDescentType = givenDescentMethod;
 	this->batchSize = batchSize;
 
-	switch (currentGradientDescentType) {
-	case Stochastic:
-		stochasticGradientDescent();
-		break;
-	case MiniBatch:
-		miniBatchGradientDescent();
-		break;
-	case FullBatch:
-		fullBatchGradientDescent();
-		break;
-	}
+	miniBatchGradientDescent();
+}
+
+void Network::runFullBatchDescent(ActivationFunctionType givenActivation, int totalEpoch) {
+	this->currentActivationFunction = givenActivation;
+	this->totalEpoch = totalEpoch;
+
+	fullBatchGradientDescent();
 }
 
 void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput) {
@@ -486,7 +471,7 @@ void Network::miniBatchGradientDescent() {
 			}
 
 			std::cout << "Perc Correct: " << totalCorrect / (trainingDataIt + 1) * 100 << "%" << std::endl;
-			std::cout << "Traububg Data Point: " << trainingDataIt << std::endl;
+			std::cout << "Training Data Point: " << trainingDataIt << std::endl;
 		}
 	}
 }
@@ -501,7 +486,7 @@ void Network::fullBatchGradientDescent() {
 			batchCalcGradients(networkTrainingData.at(trainingDataIt).second);
 
 			std::cout << "Perc Correct: " << totalCorrect / (trainingDataIt + 1) * 100 << "%" << std::endl;
-			std::cout << "Traububg Data Point: " << trainingDataIt << std::endl;
+			std::cout << "Training Data Point: " << trainingDataIt << std::endl;
 		}
 		batchApplyGradients();
 	}
