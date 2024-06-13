@@ -47,9 +47,11 @@ int main()
 
     newNetwork.displayOutput = true;
     newNetwork.passTrainingData(trainingData);
-    newNetwork.totalEpoch = 5;
-    newNetwork.runFullBatchDescent(Network::ActivationFunctionType::Sigmoid, 10); // run mini batch with a specific batch size (10
-
+    
+    newNetwork.ReluTESTING();
+    newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
+	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::Sigmoid, 100);
+	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::LeakyReLU, 5);
 
     std::cin.get();
 }

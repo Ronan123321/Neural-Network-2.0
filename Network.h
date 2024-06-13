@@ -3,19 +3,18 @@
 #include <vector>
 #include <iostream>
 
-// TODO consider making the layeIntializers take a function variable so its more universal 
 
 class Network
 {
 public:
 
 	enum ActivationFunctionType {
-		Sigmoid,
-		ReLU,
+		Sigmoid, 
+		ReLU,	
 		LeakyReLU,
 		Tanh,
-		Xcube,
 		AbsoluteValue,
+		SeLu
 	};
 
 	Network();
@@ -40,14 +39,16 @@ public:
 
 	void runFullBatchDescent(ActivationFunctionType, int epochTotal); // run full batch descent
 
+	void ReluTESTING();
+
 	ActivationFunctionType currentActivationFunction = Sigmoid; // defualt is sigmoid but can be changed
 
 
 private:
 
 	// maybe figure out a better way to do this or check that Netowrk size and the array match
-	static const int NETWORK_SIZE = 3;
-	int networkLayers[NETWORK_SIZE] = {784, 100, 10};
+	static const int NETWORK_SIZE = 4;
+	int networkLayers[NETWORK_SIZE] = {784, 300, 100, 10};
 
 	std::vector<std::vector<Node>> nodeContainer;
 
@@ -98,7 +99,7 @@ private:
 
 	void outputLayerGradientDescentBatch(std::vector<double>);
 
-	void hiddenLayerGradientDescentStochBatch();
+	void hiddenLayerGradientDescentBatch();
 
 	void batchCalcGradients(std::vector<double>);
 
@@ -132,11 +133,11 @@ private:
 
 	double TanhActivationDerivative(double);
 
-	double XcubeActivation(double);
-
-	double XcubeActivationDerivative(double);
-
 	double AbsoluteValueActivation(double);
 
 	double AbsoluteValueActivationDerivative(double);
+
+	double SeLuActivation(double);
+
+	double SeLuActivationDerivative(double);
 };
