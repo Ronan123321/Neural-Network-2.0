@@ -39,16 +39,14 @@ public:
 
 	void runFullBatchDescent(ActivationFunctionType, int epochTotal); // run full batch descent
 
-	void ReluTESTING();
-
 	ActivationFunctionType currentActivationFunction = Sigmoid; // defualt is sigmoid but can be changed
 
 
 private:
 
 	// maybe figure out a better way to do this or check that Netowrk size and the array match
-	static const int NETWORK_SIZE = 4;
-	int networkLayers[NETWORK_SIZE] = {784, 300, 100, 10};
+	static const int NETWORK_SIZE = 3;
+	int networkLayers[NETWORK_SIZE] = {784, 100, 10};
 
 	std::vector<std::vector<Node>> nodeContainer;
 
@@ -123,21 +121,21 @@ private:
 
 	double ReLUActivation(double);
 
-	double ReLUActivationDerivative(double);
+	double ReLUActivationDerivative(Node);
 
 	double LeakyReLUActivation(double);
 
-	double LeakyReLUActivationDerivative(double);
+	double LeakyReLUActivationDerivative(Node);
 
 	double TanhActivation(double);
 
-	double TanhActivationDerivative(double);
+	double TanhActivationDerivative(Node);
 
 	double AbsoluteValueActivation(double);
 
-	double AbsoluteValueActivationDerivative(double);
+	double AbsoluteValueActivationDerivative(Node);
 
 	double SeLuActivation(double);
 
-	double SeLuActivationDerivative(double);
+	double SeLuActivationDerivative(Node);
 };

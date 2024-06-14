@@ -2,7 +2,7 @@
 #include <cmath>
 #include <tgmath.h>
 
-const float Network::LEARNING_RATE = 0.01;
+const float Network::LEARNING_RATE = 0.1;
 
 const double alpha = 1.67326324;
 
@@ -219,10 +219,11 @@ bool Network::calculateNetworkOutput(std::pair<std::vector<double>, std::vector<
 			for (int connectionIt = 0; connectionIt < nodeContainer[networkLayerIt][nodeIt].backConnection.size(); connectionIt++) {
 				sum += *nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight * nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value; // weight is being dereferenced
 			}
+			nodeContainer[networkLayerIt][nodeIt].input = sum + nodeContainer[networkLayerIt][nodeIt].bias;
 			nodeContainer[networkLayerIt][nodeIt].value = this->networkActivationFunction(sum + nodeContainer[networkLayerIt][nodeIt].bias);
+			if(this->networkActivationFunction(nodeContainer[networkLayerIt][nodeIt].input) != nodeContainer[networkLayerIt][nodeIt].value)
+				throw std::exception("Activation function is not working correctly");
 		}
-
-
 	}
 
 
@@ -411,6 +412,8 @@ void Network::hiddenLayerGradientDescentBatch() {
 			nodeContainer[networkLayerIt][nodeIt].averageBiasGradient += nodeContainer[networkLayerIt][nodeIt].nodeValue;
 		}
 	}
+
+	std::cin.get();
 }
 
 void Network::batchCalcGradients(std::vector<double> expectedOutput) {
@@ -502,19 +505,19 @@ double Network::networkActivationFunctionDerivative(Node currentNode) {
 		return this->sigmoidActivationDerivative(currentNode);
 		break;
 	case ReLU:
-		return this->ReLUActivationDerivative(currentNode.value);
+		return this->ReLUActivationDerivative(currentNode);
 		break;
 	case LeakyReLU:
-		return this->LeakyReLUActivationDerivative(currentNode.value);
+		return this->LeakyReLUActivationDerivative(currentNode);
 		break;
 	case Tanh:
-		return this->TanhActivationDerivative(currentNode.value);
+		return this->TanhActivationDerivative(currentNode);
 		break;
 	case AbsoluteValue:
-		return this->AbsoluteValueActivationDerivative(currentNode.value);
+		return this->AbsoluteValueActivationDerivative(currentNode);
 		break;
 	case SeLu:
-		return this->SeLuActivationDerivative(currentNode.value);
+		return this->SeLuActivationDerivative(currentNode);
 		break;
 	}
 
@@ -532,16 +535,6 @@ double Network::sigmoidActivationDerivative(Node currentNode) {
 	return  currentNode.value * (1 - currentNode.value);
 }
 
-void Network::ReluTESTING() {
-	// change the activation function to ReLU
-	std::cout << "ReLU(3.0): " << this->ReLUActivation(3.0) << std::endl;  // Should output 3.0
-	std::cout << "ReLU(-3.0): " << this->ReLUActivation(-3.0) << std::endl; // Should output 0.0
-
-	// Test ReLU derivative
-	std::cout << "ReLU'(3.0): " << this->ReLUActivationDerivative(3.0) << std::endl;  // Should output 1.0
-	std::cout << "ReLU'(-3.0): " << this->ReLUActivationDerivative(-3.0) << std::endl; // Should output 0.0
-}
-
 double Network::ReLUActivation(double value) {
 	if (value > 0) {
 		return value;
@@ -551,9 +544,9 @@ double Network::ReLUActivation(double value) {
 	}
 }
 
-double Network::ReLUActivationDerivative(double value) {
+double Network::ReLUActivationDerivative(Node currentNode) {
 	// change the activation function to ReLU derivative
-	if (value > 0) {
+	if (currentNode.input > 0) {
 		return 1;
 	}
 	else {
@@ -562,25 +555,21 @@ double Network::ReLUActivationDerivative(double value) {
 }
 
 double Network::LeakyReLUActivation(double value) {
-	// change the activation function to Leaky ReLU
 	if (value > 0) {
 		return value;
 	}
 	else {
-		return 0.01 * value;
+		return 0.01 * value; // Leaky part
 	}
 }
 
-double Network::LeakyReLUActivationDerivative(double value) {
-	// change the activation function to Leaky ReLU derivative
-	if (value > 0) {
+double Network::LeakyReLUActivationDerivative(Node currentNode) {
+	if (currentNode.input > 0) {
 		return 1;
 	}
 	else {
-		return 0.01;
+		return 0.01; // Derivative of the leaky part
 	}
-
-	return 0;
 }
 
 double Network::TanhActivation(double value) {
@@ -588,9 +577,9 @@ double Network::TanhActivation(double value) {
 	return tanh(value);
 }
 
-double Network::TanhActivationDerivative(double value) {
+double Network::TanhActivationDerivative(Node currentNode) {
 	// derive of tanh
-	return (1 - pow(tanh(value), 2));
+	return (1 - pow(tanh(currentNode.input), 2));
 }
 
 double Network::AbsoluteValueActivation(double value) {
@@ -606,10 +595,11 @@ double Network::AbsoluteValueActivation(double value) {
 	return value;
 }
 
-double Network::AbsoluteValueActivationDerivative(double value) {
+double Network::AbsoluteValueActivationDerivative(Node currentNode) {
 	// change the activation function to Absolute Value derivative
 
-	return value / abs(value);
+	return currentNode.input / abs(currentNode.input);
+
 }
 
 double Network::SeLuActivation(double value) {
@@ -622,12 +612,12 @@ double Network::SeLuActivation(double value) {
 	}
 }
 
-double Network::SeLuActivationDerivative(double value) {
+double Network::SeLuActivationDerivative(Node currentNode) {
 	// change the activation function to SeLU derivative
-	if (value >= 0) {
+	if (currentNode.input >= 0) {
 		return scale;
 	}
 	else {
-		return scale * alpha * exp(value);
+		return scale * alpha * exp(currentNode.input);
 	}
 }

@@ -9,6 +9,7 @@ class Node
 private:
 	double bias;
 	double value;
+	double input;
 	double nodeValue;
 	double averageBiasGradient;
 

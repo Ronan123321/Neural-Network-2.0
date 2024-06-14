@@ -4,7 +4,7 @@
 #include <string>
 #include "Network.h"
 
-std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingData() {
+std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingDataMNIST() {
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData; // for some reason after declaring this it jumps down to the return statement then comes back up
     std::fstream trainingDataFile;
 
@@ -35,7 +35,15 @@ std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingD
     return trainingData;
 }
 
+std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingData232() {
+    std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
+    for (int trainingIt = 0; trainingIt < 100; trainingIt++) {
+        trainingData.push_back(std::make_pair(std::vector<double>{1, 0}, std::vector<double>{0, 1}));
+    }
+
+	return trainingData;
+}
 
 int main()
 {
@@ -43,15 +51,18 @@ int main()
 
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
-    trainingData = createTrainingData();
+    trainingData = createTrainingDataMNIST();
+	//trainingData = createTrainingData232();
 
     newNetwork.displayOutput = true;
     newNetwork.passTrainingData(trainingData);
-    
-    newNetwork.ReluTESTING();
+
+	newNetwork.currentActivationFunction = Network::ActivationFunctionType::Sigmoid;
+	//newNetwork.runNetworkWithTrainingData(true);
+
     newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
-	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::Sigmoid, 100);
+	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::ReLU, 1);
 	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::LeakyReLU, 5);
 
     std::cin.get();
-}
+} 
