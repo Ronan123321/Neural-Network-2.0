@@ -2,7 +2,7 @@
 #include <cmath>
 #include <tgmath.h>
 
-const float Network::LEARNING_RATE = 0.1;
+const float Network::LEARNING_RATE = 0.001;
 
 const double alpha = 1.67326324;
 
@@ -342,7 +342,7 @@ void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput
 
 void Network::hiddenLayerGradientDescentStoch() {
 
-	for (int networkLayerIt = NETWORK_SIZE - 1; networkLayerIt > 0; networkLayerIt--) {
+	for (int networkLayerIt = NETWORK_SIZE - 2; networkLayerIt > 0; networkLayerIt--) { // changed NETWORK_SIZE - 1 to NETWORK_SIZE - 2
 
 
 		for (int nodeIt = 0; nodeIt < networkLayers[networkLayerIt]; nodeIt++) {
@@ -366,6 +366,8 @@ void Network::hiddenLayerGradientDescentStoch() {
 			nodeContainer[networkLayerIt][nodeIt].bias = nodeContainer[networkLayerIt][nodeIt].bias - Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 		}
 	}
+
+	std::cin.get();
 }
 
 void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput) {
@@ -388,8 +390,7 @@ void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput
 }
 
 void Network::hiddenLayerGradientDescentBatch() {
-	for (int networkLayerIt = NETWORK_SIZE - 1; networkLayerIt > 0; networkLayerIt--) {
-
+	for (int networkLayerIt = NETWORK_SIZE - 2; networkLayerIt > 0; networkLayerIt--) {
 
 		for (int nodeIt = 0; nodeIt < networkLayers[networkLayerIt]; nodeIt++) {
 			//ensures node value is 0
@@ -405,15 +406,16 @@ void Network::hiddenLayerGradientDescentBatch() {
 			for (int connectionIt = 0; connectionIt < nodeContainer[networkLayerIt][nodeIt].backConnection.size(); connectionIt++) {
 				// completes the gradient and updates the weight
 				*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) += nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
+				std::cout << "Layer: " << networkLayerIt << " Node: " << nodeIt << " Connection: " << connectionIt << " Weight Gradient: " << *(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) << "\n";
 
 			}
-
+			
 			//Uses the node value from the previous loops and uses it to update the bias
 			nodeContainer[networkLayerIt][nodeIt].averageBiasGradient += nodeContainer[networkLayerIt][nodeIt].nodeValue;
 		}
 	}
 
-	std::cin.get();
+	//std::cin.get();
 }
 
 void Network::batchCalcGradients(std::vector<double> expectedOutput) {

@@ -39,7 +39,8 @@ std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingD
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
     for (int trainingIt = 0; trainingIt < 100; trainingIt++) {
-        trainingData.push_back(std::make_pair(std::vector<double>{1, 0}, std::vector<double>{0, 1}));
+        trainingData.push_back(std::make_pair(std::vector<double>{1, 0}, std::vector<double>{0, 100}));
+        trainingData.push_back(std::make_pair(std::vector<double>{0, 1}, std::vector<double>{100, 0}));
     }
 
 	return trainingData;
@@ -51,8 +52,8 @@ int main()
 
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
-    trainingData = createTrainingDataMNIST();
-	//trainingData = createTrainingData232();
+    //trainingData = createTrainingDataMNIST();
+	trainingData = createTrainingData232();
 
     newNetwork.displayOutput = true;
     newNetwork.passTrainingData(trainingData);
@@ -60,8 +61,8 @@ int main()
 	newNetwork.currentActivationFunction = Network::ActivationFunctionType::Sigmoid;
 	//newNetwork.runNetworkWithTrainingData(true);
 
-    newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
-	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::ReLU, 1);
+    //newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
+	newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::ReLU, 1);
 	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::LeakyReLU, 5);
 
     std::cin.get();
