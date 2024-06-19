@@ -2,7 +2,7 @@
 #include <cmath>
 #include <tgmath.h>
 
-const float Network::LEARNING_RATE = 0.001;
+const float Network::LEARNING_RATE = 0.1;
 
 const double alpha = 1.67326324;
 
@@ -68,7 +68,7 @@ void Network::runNetworkWithTrainingData(bool displayOutput) {
 	}
 
 }
-
+	
 void Network::runNetworkWithTrainingData(bool displayOutput, std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData) {
 	this->displayOutput = displayOutput;
 	passTrainingData(trainingData);
@@ -245,10 +245,11 @@ bool Network::calculateNetworkOutput(std::pair<std::vector<double>, std::vector<
 				std::cout << "Correct\n";
 				return true;
 			}
+			std::cout << "Correct label: " << trainingDataLabelIt << std::endl;
 		}
 	
 	}
-
+	std::cout << "Highest Value: " << highestValueCount << std::endl;		
 	return false;
 }
 
@@ -342,7 +343,7 @@ void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput
 
 void Network::hiddenLayerGradientDescentStoch() {
 
-	for (int networkLayerIt = NETWORK_SIZE - 2; networkLayerIt > 0; networkLayerIt--) { // changed NETWORK_SIZE - 1 to NETWORK_SIZE - 2
+	for (int networkLayerIt = NETWORK_SIZE - 2; networkLayerIt > 0; networkLayerIt--) { 
 
 
 		for (int nodeIt = 0; nodeIt < networkLayers[networkLayerIt]; nodeIt++) {
@@ -367,7 +368,7 @@ void Network::hiddenLayerGradientDescentStoch() {
 		}
 	}
 
-	std::cin.get();
+	//std::cin.get();
 }
 
 void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput) {
@@ -406,7 +407,6 @@ void Network::hiddenLayerGradientDescentBatch() {
 			for (int connectionIt = 0; connectionIt < nodeContainer[networkLayerIt][nodeIt].backConnection.size(); connectionIt++) {
 				// completes the gradient and updates the weight
 				*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) += nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
-				std::cout << "Layer: " << networkLayerIt << " Node: " << nodeIt << " Connection: " << connectionIt << " Weight Gradient: " << *(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) << "\n";
 
 			}
 			
@@ -456,6 +456,7 @@ void Network::stochasticGradientDescent() {
 	float totalCorrect = 0;
 
 	for (int epochIt = 0; epochIt < totalEpoch; epochIt++) {
+
 		for (int trainingDataIt = 0; trainingDataIt < networkTrainingData.size(); trainingDataIt++) {
 			if (this->calculateNetworkOutput(networkTrainingData.at(trainingDataIt)))
 				totalCorrect++;
@@ -534,6 +535,8 @@ double Network::sigmoidActivation(double value) {
 
 double Network::sigmoidActivationDerivative(Node currentNode) {
 	// change the activation function to sigmoid derivative
+	if(sigmoidActivation(currentNode.input) != currentNode.value)
+		throw std::exception("Sigmoid derivative is not working correctly");
 	return  currentNode.value * (1 - currentNode.value);
 }
 
