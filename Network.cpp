@@ -2,7 +2,7 @@
 #include <cmath>
 #include <tgmath.h>
 
-const float Network::LEARNING_RATE = 0.1;
+const double Network::LEARNING_RATE = 0.01;
 
 const double alpha = 1.67326324;
 
@@ -334,6 +334,8 @@ void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput
 			
 			//update the weight
 			*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->weight) = *(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->weight) - Network::LEARNING_RATE *nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue* nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->backNode->value;
+			//*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->averageWeightGradient) = Network::LEARNING_RATE * nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue * nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->backNode->value;
+
 		}
 
 		// Uses the node value from the previous loops and uses it to update the bias
@@ -344,8 +346,6 @@ void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput
 void Network::hiddenLayerGradientDescentStoch() {
 
 	for (int networkLayerIt = NETWORK_SIZE - 2; networkLayerIt > 0; networkLayerIt--) { 
-
-
 		for (int nodeIt = 0; nodeIt < networkLayers[networkLayerIt]; nodeIt++) {
 			//ensures node value is 0
 			nodeContainer[networkLayerIt][nodeIt].nodeValue = 0;
@@ -358,8 +358,10 @@ void Network::hiddenLayerGradientDescentStoch() {
 			nodeContainer[networkLayerIt][nodeIt].nodeValue = networkActivationFunctionDerivative(nodeContainer[networkLayerIt][nodeIt]) * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
 			for (int connectionIt = 0; connectionIt < nodeContainer[networkLayerIt][nodeIt].backConnection.size(); connectionIt++) {
+
 				// completes the gradient and updates the weight
 				*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight) = *(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight) - Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
+				//*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) = Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
 			}
 

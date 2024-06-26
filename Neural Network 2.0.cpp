@@ -38,9 +38,9 @@ std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingD
 std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingData232() {
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
-    for (int trainingIt = 0; trainingIt < 10; trainingIt++) {
-        trainingData.push_back(std::make_pair(std::vector<double>{1, 0}, std::vector<double>{1, 0}));
-        trainingData.push_back(std::make_pair(std::vector<double>{0, 1}, std::vector<double>{0, 1}));
+    for (int trainingIt = 0; trainingIt < 100; trainingIt++) {
+        trainingData.push_back(std::make_pair(std::vector<double>{0, 1}, std::vector<double>{1, 0}));
+        trainingData.push_back(std::make_pair(std::vector<double>{1, 0}, std::vector<double>{0, 1}));
     }
 
 	return trainingData;
@@ -64,6 +64,7 @@ int main()
     newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
 	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::Sigmoid, 1);
 	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::LeakyReLU, 5);
+
 
     std::cin.get();
 } 

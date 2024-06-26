@@ -45,8 +45,8 @@ public:
 private:
 
 	// maybe figure out a better way to do this or check that Netowrk size and the array match
-	static const int NETWORK_SIZE = 3;
-	int networkLayers[NETWORK_SIZE] = {2, 3, 2};
+	static const int NETWORK_SIZE = 2;
+	int networkLayers[NETWORK_SIZE] = {2, 2};
 
 	std::vector<std::vector<Node>> nodeContainer;
 
@@ -56,7 +56,7 @@ private:
 
 	//---------------------Vars------------------------------------------------
 	
-	static const float LEARNING_RATE;
+	static const double LEARNING_RATE;
 
 	//-----------------------Initialization--------------------------------------------
 
