@@ -2,7 +2,7 @@
 #include <cmath>
 #include <tgmath.h>
 
-const double Network::LEARNING_RATE = 0.01;
+const double Network::LEARNING_RATE = 0.0001;
 
 const double alpha = 1.67326324;
 
@@ -203,6 +203,7 @@ void Network::connectHiddenLayers() {
 
 bool Network::calculateNetworkOutput(std::pair<std::vector<double>, std::vector<double>> trainingDataPair) {
 	//Each node uses its own bias to calcualte its OWN value
+	bool correctGuess = false;
 
 	// Set the input layer values from the trainng data
 	for (int inputLayerIt = 0; inputLayerIt < networkLayers[0]; inputLayerIt++) {
@@ -243,14 +244,16 @@ bool Network::calculateNetworkOutput(std::pair<std::vector<double>, std::vector<
 		if (trainingDataPair.second.at(trainingDataLabelIt) == 1) {
 			if (highestValueCount == trainingDataLabelIt) {
 				std::cout << "Correct\n";
-				return true;
+				correctGuess = true;
 			}
 			std::cout << "Correct label: " << trainingDataLabelIt << std::endl;
 		}
 	
 	}
+
 	std::cout << "Highest Value: " << highestValueCount << std::endl;		
-	return false;
+
+	return correctGuess;
 }
 
 double Network::networkActivationFunction(double value) {
@@ -334,7 +337,7 @@ void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput
 			
 			//update the weight
 			*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->weight) = *(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->weight) - Network::LEARNING_RATE *nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue* nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->backNode->value;
-			//*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->averageWeightGradient) = Network::LEARNING_RATE * nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue * nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->backNode->value;
+			//*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->averageWeightGradient) = nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue * nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->backNode->value;
 
 		}
 
@@ -354,6 +357,8 @@ void Network::hiddenLayerGradientDescentStoch() {
 				nodeContainer[networkLayerIt][nodeIt].nodeValue += *(nodeContainer[networkLayerIt][nodeIt].frontConnection[nodeValueIt]->weight) * nodeContainer[networkLayerIt][nodeIt].frontConnection[nodeValueIt]->frontNode->nodeValue;
 			}
 
+			//std::cout << "Gradient Calc:" << networkActivationFunctionDerivative(nodeContainer[networkLayerIt][nodeIt]) << std::endl;
+			//std::cout << "Node Value: " << nodeContainer[networkLayerIt][nodeIt].nodeValue << std::endl;
 			// finalizes the node value
 			nodeContainer[networkLayerIt][nodeIt].nodeValue = networkActivationFunctionDerivative(nodeContainer[networkLayerIt][nodeIt]) * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
@@ -361,7 +366,7 @@ void Network::hiddenLayerGradientDescentStoch() {
 
 				// completes the gradient and updates the weight
 				*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight) = *(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight) - Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
-				//*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) = Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
+				//*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) = nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
 			}
 
@@ -455,6 +460,7 @@ void Network::stochApplyGradients(std::vector<double> expectedOutput) {
 
 void Network::stochasticGradientDescent() {
 	// update the weights and biases using stochastic gradient descent
+	int resetGuessCounter = 0;
 	float totalCorrect = 0;
 
 	for (int epochIt = 0; epochIt < totalEpoch; epochIt++) {
@@ -464,7 +470,13 @@ void Network::stochasticGradientDescent() {
 				totalCorrect++;
 			stochApplyGradients(networkTrainingData.at(trainingDataIt).second);
 
-			std::cout << "Perc Correct: " << totalCorrect / (trainingDataIt + 1) * 100 << "%" << std::endl;
+			std::cout << "Perc Correct: " << totalCorrect / (resetGuessCounter + 1) * 100 << "%" << std::endl;
+			std::cout << "Training Data Point: " << trainingDataIt << std::endl << std::endl << std::endl;
+			resetGuessCounter++;
+			if (resetGuessCounter % 1000 == 0) {
+				resetGuessCounter = 0;
+				totalCorrect = 0;
+			}
 		}
 	}
 }
@@ -536,7 +548,6 @@ double Network::sigmoidActivation(double value) {
 }
 
 double Network::sigmoidActivationDerivative(Node currentNode) {
-	// change the activation function to sigmoid derivative
 	if(sigmoidActivation(currentNode.input) != currentNode.value)
 		throw std::exception("Sigmoid derivative is not working correctly");
 	return  currentNode.value * (1 - currentNode.value);

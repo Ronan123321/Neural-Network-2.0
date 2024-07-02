@@ -3,6 +3,7 @@
 #include <vector>
 #include <iostream>
 
+//TODO : Add an option for different cost functions
 
 class Network
 {
@@ -45,8 +46,8 @@ public:
 private:
 
 	// maybe figure out a better way to do this or check that Netowrk size and the array match
-	static const int NETWORK_SIZE = 2;
-	int networkLayers[NETWORK_SIZE] = {2, 2};
+	static const int NETWORK_SIZE = 4;
+	int networkLayers[NETWORK_SIZE] = {16, 500, 100, 26};
 
 	std::vector<std::vector<Node>> nodeContainer;
 
