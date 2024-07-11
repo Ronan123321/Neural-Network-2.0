@@ -51,7 +51,8 @@ int main()
 
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
-    trainingData = createTrainingDataMNIST();
+    //trainingData = createTrainingDataMNIST();
+	trainingData = createTrainingLetters();
 	//trainingData = createTrainingData232();
 
     newNetwork.displayOutput = true;
@@ -59,10 +60,12 @@ int main()
 
 	newNetwork.currentActivationFunction = Network::ActivationFunctionType::Sigmoid;
 	//newNetwork.runNetworkWithTrainingData(true);
+    std::cout << "Descent Started\n";
+	newNetwork.totalEpoch = 5;
+    newNetwork.runStochDescent(Network::ActivationFunctionType::SeLu);
+	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::AbsoluteValue, 100);
+	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::Sigmoid, 10);
 
-    newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
-	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::ReLU, 1);
-	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::LeakyReLU, 5);
 
     std::cin.get();
 } 

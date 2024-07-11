@@ -465,6 +465,7 @@ void Network::stochasticGradientDescent() {
 }
 
 void Network::miniBatchGradientDescent() {
+	int resetGuessCounter = 0;
 	float totalCorrect = 0;
 
 	for (int epochIt = 0; epochIt < totalEpoch; epochIt++) {
@@ -479,6 +480,11 @@ void Network::miniBatchGradientDescent() {
 
 			std::cout << "Perc Correct: " << totalCorrect / (trainingDataIt + 1) * 100 << "%" << std::endl;
 			std::cout << "Training Data Point: " << trainingDataIt << std::endl;
+			resetGuessCounter++;
+			if (resetGuessCounter % 1000 == 0) {
+				resetGuessCounter = 0;
+				totalCorrect = 0;
+			}
 		}
 	}
 }
@@ -486,6 +492,9 @@ void Network::miniBatchGradientDescent() {
 void Network::fullBatchGradientDescent() {
 	// update the weights and biases using mini batch gradient descent
 	float totalCorrect = 0;
+	int resetGuessCounter = 0;
+
+
 	for (int epochIt = 0; epochIt < totalEpoch; epochIt++) {
 		for (int trainingDataIt = 0; trainingDataIt < 1000/*networkTrainingData.size()*/; trainingDataIt++) {
 			if (this->calculateNetworkOutput(networkTrainingData.at(trainingDataIt)))
@@ -494,6 +503,11 @@ void Network::fullBatchGradientDescent() {
 
 			std::cout << "Perc Correct: " << totalCorrect / (trainingDataIt + 1) * 100 << "%" << std::endl;
 			std::cout << "Training Data Point: " << trainingDataIt << std::endl;
+			resetGuessCounter++;
+			if (resetGuessCounter % 1000 == 0) {
+				resetGuessCounter = 0;
+				totalCorrect = 0;
+			}
 		}
 		batchApplyGradients();
 	}
@@ -620,4 +634,14 @@ double Network::SeLuActivationDerivative(Node currentNode) {
 	else {
 		return scale * alpha * exp(currentNode.input);
 	}
+}
+
+//---------------------Cost Functions------------------------------------------------
+
+double Network::difSqrd(double expectedOutput, double actualOutput) {
+	return pow(actualOutput - expectedOutput, 2);
+}
+
+double Network::difSqrdDerivative(Node currentNode, double expectedOutput) {
+	return 2 * (currentNode.value - expectedOutput);
 }

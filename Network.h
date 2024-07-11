@@ -138,4 +138,10 @@ private:
 	double SeLuActivation(double);
 
 	double SeLuActivationDerivative(Node);
+
+	// ---------------------Cost Functions------------------------------------------------
+
+	double difSqrd(double, double);
+
+	double difSqrdDerivative(Node, double);
 };
