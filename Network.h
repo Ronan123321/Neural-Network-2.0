@@ -47,7 +47,7 @@ private:
 
 	// maybe figure out a better way to do this or check that Netowrk size and the array match
 	static const int NETWORK_SIZE = 4;
-	int networkLayers[NETWORK_SIZE] = {16, 500, 100, 26};
+	int networkLayers[NETWORK_SIZE] = {784, 500, 100, 10};
 
 	std::vector<std::vector<Node>> nodeContainer;
 

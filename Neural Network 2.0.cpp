@@ -83,8 +83,8 @@ int main()
 
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
-    //trainingData = createTrainingDataMNIST();
-	trainingData = createTrainingLetters();
+    trainingData = createTrainingDataMNIST();
+	//trainingData = createTrainingLetters();
 	//trainingData = createTrainingData232();
 
     newNetwork.displayOutput = true;
