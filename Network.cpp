@@ -384,8 +384,10 @@ void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput
 	for (int nodeIt = 0; nodeIt < networkLayers[NETWORK_SIZE - 1]; nodeIt++) {
 
 		// calculate the new node values
-		nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue = networkActivationFunctionDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt]) * 2 * (nodeContainer[NETWORK_SIZE - 1][nodeIt].value - expectedOutput[nodeIt]);
-	
+		double nodeValueTest = networkActivationFunctionDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt]) * difSqrdDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt], expectedOutput[nodeIt]);
+		if (nodeValueTest != nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue)
+			throw std::exception("Node value is not being calculated correctly");
+
 		for (int connectionIt = 0; connectionIt < nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection.size(); connectionIt++) {
 
 			//update the weight
