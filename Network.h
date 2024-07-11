@@ -18,6 +18,12 @@ public:
 		SeLu
 	};
 
+	enum CostFunctionType {
+		DifferenceSquared,
+		MeanSquaredError,
+		CrossEntropy
+	};
+
 	Network();
 
 	int batchSize = 1; // this makes default stochastic
@@ -41,6 +47,8 @@ public:
 	void runFullBatchDescent(ActivationFunctionType, int epochTotal); // run full batch descent
 
 	ActivationFunctionType currentActivationFunction = Sigmoid; // defualt is sigmoid but can be changed
+
+	CostFunctionType currentCostFunction = DifferenceSquared; // default is difference squared but can be changed
 
 
 private:
@@ -83,6 +91,8 @@ private:
 
 	double networkActivationFunction(double value);
 
+	double networkCostFunction(double output, double expectedOutput);
+
 	//---------------------Training Data--------------------------------------------
 
 	void verifyTrainingData();
@@ -113,6 +123,8 @@ private:
 	void fullBatchGradientDescent();
 
 	double networkActivationFunctionDerivative(Node);
+
+	double networkCostFunctionDerivative(Node, double);
 
 	//---------------------Activation Functions------------------------------------------------
 
@@ -145,4 +157,12 @@ private:
 	double difSqrd(double, double);
 
 	double difSqrdDerivative(Node, double);
+
+	double meanSqrdError(double, double);
+
+	double meanSqrdErrorDerivative(Node, double);
+
+	double crossEntropy(double, double);
+
+	double crossEntropyDerivative(Node, double);
 };

@@ -281,6 +281,19 @@ double Network::networkActivationFunction(double value) {
 	}
 }
 
+double Network::networkCostFunction(double expectedOutput, double actualOutput) {
+	switch (currentCostFunction) {
+		case DifferenceSquared:
+			return this->difSqrd(expectedOutput, actualOutput);
+			break;
+		case MeanSquaredError:
+			break;
+		case CrossEntropy:
+			break;
+	}
+	return 0;
+}
+
 
 //---------------------Training Data--------------------------------------------
 
@@ -385,8 +398,6 @@ void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput
 
 		// calculate the new node values
 		double nodeValueTest = networkActivationFunctionDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt]) * difSqrdDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt], expectedOutput[nodeIt]);
-		if (nodeValueTest != nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue)
-			throw std::exception("Node value is not being calculated correctly");
 
 		for (int connectionIt = 0; connectionIt < nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection.size(); connectionIt++) {
 
@@ -664,4 +675,22 @@ double Network::difSqrd(double expectedOutput, double actualOutput) {
 
 double Network::difSqrdDerivative(Node currentNode, double expectedOutput) {
 	return 2 * (currentNode.value - expectedOutput);
+}
+
+double Network::meanSqrdError(double expectedOutput, double actualOutput) {
+	return (1 / this->networkTrainingData.size()) * (actualOutput - expectedOutput);
+}
+
+double Network::meanSqrdErrorDerivative(Node currentNode, double expectedOutput) {
+	return (2 / this->networkTrainingData.size()) * (currentNode.value - expectedOutput);
+}
+
+// i just let github copilot do cross entropy prolly check if these are right at some point
+
+double Network::crossEntropy(double expectedOutput, double actualOutput) {
+	return -expectedOutput * log(actualOutput) - (1 - expectedOutput) * log(1 - actualOutput);
+}
+
+double Network::crossEntropyDerivative(Node currentNode, double expectedOutput) {
+	return -(expectedOutput / currentNode.value) + ((1 - expectedOutput) / (1 - currentNode.value));
 }
