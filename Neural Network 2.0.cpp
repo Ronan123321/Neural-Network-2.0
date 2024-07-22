@@ -88,21 +88,17 @@ int main()
 	//trainingData = createTrainingData232();
 
     newNetwork.displayOutput = true;
-	newNetwork.currentCostFunction = Network::CostFunctionType::MeanSquaredError;
+	newNetwork.currentCostFunction = Network::CostFunctionType::DifferenceSquared;
     newNetwork.passTrainingData(trainingData);
 
 	//newNetwork.currentActivationFunction = Network::ActivationFunctionType::Sigmoid;
 	//newNetwork.runNetworkWithTrainingData(true);
     std::cout << "Descent Started\n";
 	newNetwork.totalEpoch = 5;
-    newNetwork.runStochDescent(Network::ActivationFunctionType::Sigmoid);
+    newNetwork.runStochDescent(Network::ActivationFunctionType::ReLU);
 	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::AbsoluteValue, 100);
 	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::Sigmoid, 10);
 
 
     std::cin.get();
 } 
-
-/*
-
-*/

@@ -360,7 +360,6 @@ void Network::outputLayerGradientDescentStoch(std::vector<double> expectedOutput
 }
 
 void Network::hiddenLayerGradientDescentStoch() {
-
 	for (int networkLayerIt = NETWORK_SIZE - 2; networkLayerIt > 0; networkLayerIt--) { 
 		for (int nodeIt = 0; nodeIt < networkLayers[networkLayerIt]; nodeIt++) {
 			//ensures node value is 0
@@ -370,14 +369,12 @@ void Network::hiddenLayerGradientDescentStoch() {
 				nodeContainer[networkLayerIt][nodeIt].nodeValue += *(nodeContainer[networkLayerIt][nodeIt].frontConnection[nodeValueIt]->weight) * nodeContainer[networkLayerIt][nodeIt].frontConnection[nodeValueIt]->frontNode->nodeValue;
 			}
 
-			//std::cout << "Gradient Calc:" << networkActivationFunctionDerivative(nodeContainer[networkLayerIt][nodeIt]) << std::endl;
-			//std::cout << "Node Value: " << nodeContainer[networkLayerIt][nodeIt].nodeValue << std::endl;
-			// finalizes the node value
+			double kernelwWeightSum = 0;
+
 			nodeContainer[networkLayerIt][nodeIt].nodeValue = networkActivationFunctionDerivative(nodeContainer[networkLayerIt][nodeIt]) * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
 			for (int connectionIt = 0; connectionIt < nodeContainer[networkLayerIt][nodeIt].backConnection.size(); connectionIt++) {
 
-				// completes the gradient and updates the weight
 				*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight) = *(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->weight) - Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 				//*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) = nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
@@ -388,7 +385,7 @@ void Network::hiddenLayerGradientDescentStoch() {
 		}
 	}
 
-	//std::cin.get();
+	kernelNodeValueCalc();
 }
 
 void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput) {
@@ -396,11 +393,13 @@ void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput
 
 	for (int nodeIt = 0; nodeIt < networkLayers[NETWORK_SIZE - 1]; nodeIt++) {
 
+		nodeContainer[NETWORK_SIZE - 1][nodeIt].averageBiasGradient = 0;
+
 		// calculate the new node values
-		double nodeValueTest = networkActivationFunctionDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt]) * difSqrdDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt], expectedOutput[nodeIt]);
+		double nodeValueTest = networkActivationFunctionDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt]) * networkCostFunctionDerivative(nodeContainer[NETWORK_SIZE - 1][nodeIt], expectedOutput[nodeIt]);
 
 		for (int connectionIt = 0; connectionIt < nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection.size(); connectionIt++) {
-
+			*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->averageWeightGradient) = 0;
 			//update the weight
 			*(nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->averageWeightGradient) += nodeContainer[NETWORK_SIZE - 1][nodeIt].nodeValue * nodeContainer[NETWORK_SIZE - 1][nodeIt].backConnection[connectionIt]->backNode->value;
 		}
@@ -425,6 +424,8 @@ void Network::hiddenLayerGradientDescentBatch() {
 			nodeContainer[networkLayerIt][nodeIt].nodeValue = networkActivationFunctionDerivative(nodeContainer[networkLayerIt][nodeIt]) * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
 			for (int connectionIt = 0; connectionIt < nodeContainer[networkLayerIt][nodeIt].backConnection.size(); connectionIt++) {
+				if (networkLayerIt == 1) // prob can remove once done testing kernel
+					kernelNodeValue.push_back(nodeContainer[networkLayerIt][nodeIt].nodeValue);
 				// completes the gradient and updates the weight
 				*(nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->averageWeightGradient) += nodeContainer[networkLayerIt][nodeIt].backConnection[connectionIt]->backNode->value * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 
@@ -434,8 +435,7 @@ void Network::hiddenLayerGradientDescentBatch() {
 			nodeContainer[networkLayerIt][nodeIt].averageBiasGradient += nodeContainer[networkLayerIt][nodeIt].nodeValue;
 		}
 	}
-
-	//std::cin.get();
+;
 }
 
 void Network::batchCalcGradients(std::vector<double> expectedOutput) {
@@ -483,10 +483,11 @@ void Network::stochasticGradientDescent() {
 				totalCorrect++;
 			stochApplyGradients(networkTrainingData.at(trainingDataIt).second);
 
-			std::cout << "Perc Correct: " << totalCorrect / (resetGuessCounter + 1) * 100 << "%" << std::endl;
+			std::cout << "Perc Correct: " << totalCorrect / (resetGuessCounter + 1) * 100.0 << "%" << std::endl;
 			std::cout << "Training Data Point: " << trainingDataIt << std::endl << std::endl << std::endl;
+
 			resetGuessCounter++;
-			if (resetGuessCounter % 1000 == 0) {
+			if (resetGuessCounter % 5000 == 0) {
 				resetGuessCounter = 0;
 				totalCorrect = 0;
 			}
@@ -510,8 +511,9 @@ void Network::miniBatchGradientDescent() {
 
 			std::cout << "Perc Correct: " << totalCorrect / (trainingDataIt + 1) * 100 << "%" << std::endl;
 			std::cout << "Training Data Point: " << trainingDataIt << std::endl;
+
 			resetGuessCounter++;
-			if (resetGuessCounter % 1000 == 0) {
+			if (resetGuessCounter % 5000 == 0) {
 				resetGuessCounter = 0;
 				totalCorrect = 0;
 			}
@@ -565,6 +567,21 @@ double Network::networkActivationFunctionDerivative(Node currentNode) {
 		break;
 	}
 
+	return 0;
+}
+
+double Network::networkCostFunctionDerivative(Node currentNode, double expectedOutput) {
+	switch (currentCostFunction) {
+	case DifferenceSquared:
+		return this->difSqrdDerivative(currentNode, expectedOutput);
+		break;
+	case MeanSquaredError:
+		return this->meanSqrdErrorDerivative(currentNode, expectedOutput);
+		break;
+	case CrossEntropy:
+		return this->crossEntropyDerivative(currentNode, expectedOutput);
+		break;
+	}
 	return 0;
 }
 
