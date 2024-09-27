@@ -236,7 +236,7 @@ bool Network::calculateNetworkOutput(std::pair<std::vector<double>, std::vector<
 				highestValue = nodeContainer[NETWORK_SIZE - 1][outputLayerIt].value;
 				highestValueCount = outputLayerIt;
 			}
-			std::cout << outputLayerIt << ": " << nodeContainer[NETWORK_SIZE - 1][outputLayerIt].value << std::endl;
+			std::cout << outputLayerIt << ": " << nodeContainer[NETWORK_SIZE - 1][outputLayerIt].value << std::endl; // IF THIS ISNT OUTUTTING ITS PROBABLY NETOWRK SIZE
 		}
 	}
 
@@ -384,8 +384,6 @@ void Network::hiddenLayerGradientDescentStoch() {
 			nodeContainer[networkLayerIt][nodeIt].bias = nodeContainer[networkLayerIt][nodeIt].bias - Network::LEARNING_RATE * nodeContainer[networkLayerIt][nodeIt].nodeValue;
 		}
 	}
-
-	kernelNodeValueCalc();
 }
 
 void Network::outputLayerGradientDescentBatch(std::vector<double> expectedOutput) {

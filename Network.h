@@ -52,8 +52,8 @@ public:
 private:
 
 	// maybe figure out a better way to do this or check that Netowrk size and the array match
-	static const int NETWORK_SIZE = 4;
-	int networkLayers[NETWORK_SIZE] = {784, 300, 200, 10};
+	static const int NETWORK_SIZE = 3;
+	int networkLayers[NETWORK_SIZE] = {784, 300, 10};
 
 	std::vector<double> kernelNodeValue;
 

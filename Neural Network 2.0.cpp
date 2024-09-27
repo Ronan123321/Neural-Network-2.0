@@ -80,7 +80,6 @@ std::vector<std::pair<std::vector<double>, std::vector<double>>> createTrainingD
 int main()
 {
     Network newNetwork;
-
     std::vector<std::pair<std::vector<double>, std::vector<double>>> trainingData;
 
     trainingData = createTrainingDataMNIST();
@@ -88,16 +87,18 @@ int main()
 	//trainingData = createTrainingData232();
 
     newNetwork.displayOutput = true;
-	newNetwork.currentCostFunction = Network::CostFunctionType::DifferenceSquared;
+	newNetwork.currentCostFunction = Network::CostFunctionType::MeanSquaredError;
     newNetwork.passTrainingData(trainingData);
 
 	//newNetwork.currentActivationFunction = Network::ActivationFunctionType::Sigmoid;
 	//newNetwork.runNetworkWithTrainingData(true);
     std::cout << "Descent Started\n";
-	newNetwork.totalEpoch = 5;
+	newNetwork.totalEpoch = 1;
     newNetwork.runStochDescent(Network::ActivationFunctionType::ReLU);
 	//newNetwork.runMiniBatchDescent(Network::ActivationFunctionType::AbsoluteValue, 100);
 	//newNetwork.runFullBatchDescent(Network::ActivationFunctionType::Sigmoid, 10);
+	std::cout << "Cost: Mean Squared\n";
+	std::cout << "Activation: ReLU\n";
 
 
     std::cin.get();
